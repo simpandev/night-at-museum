@@ -1,0 +1,103 @@
+<mat-toolbar color="primary">
+  <span>{{ title() }} - Egyptian Museum of Turin</span>
+  <span class="spacer"></span>
+  <button mat-icon-button>
+    <mat-icon>location_on</mat-icon>
+  </button>
+</mat-toolbar>
+
+<div class="container">
+  <!-- Current Room Display -->
+  <mat-card class="room-card" *ngIf="currentRoom">
+    <mat-card-header>
+      <mat-card-title>Current Location</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <h2>{{ currentRoom.name }}</h2>
+      <p>{{ currentRoom.description }}</p>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Audio Player -->
+  <mat-card class="player-card" *ngIf="audioState.currentTrack">
+    <mat-card-header>
+      <mat-card-title>Now Playing</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <h3>{{ audioState.currentTrack.title }}</h3>
+      <p>{{ audioState.currentTrack.description }}</p>
+      
+      <!-- Progress Bar -->
+      <div class="progress-container">
+        <span class="time">{{ formatTime(audioState.currentTime) }}</span>
+        <mat-slider 
+          class="progress-slider"
+          [min]="0" 
+          [max]="audioState.duration || 100">
+          <input matSliderThumb [value]="audioState.currentTime" (valueChange)="seekTo($event)">
+        </mat-slider>
+        <span class="time">{{ formatTime(audioState.duration) }}</span>
+      </div>
+
+      <!-- Player Controls -->
+      <div class="player-controls">
+        <button mat-fab color="primary" (click)="togglePlayPause()">
+          <mat-icon>{{ audioState.isPlaying ? 'pause' : 'play_arrow' }}</mat-icon>
+        </button>
+        <button mat-mini-fab (click)="stopAudio()">
+          <mat-icon>stop</mat-icon>
+        </button>
+      </div>
+
+      <!-- Volume Control -->
+      <div class="volume-container">
+        <mat-icon>volume_up</mat-icon>
+        <mat-slider 
+          class="volume-slider"
+          [min]="0" 
+          [max]="100">
+          <input matSliderThumb [value]="audioState.volume * 100" (valueChange)="setVolume($event)">
+        </mat-slider>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Audio Guide Selection -->
+  <mat-card class="tracks-card">
+    <mat-card-header>
+      <mat-card-title>Audio Guides</mat-card-title>
+      <mat-card-subtitle>Select an audio guide to listen</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-list>
+        <mat-list-item *ngFor="let track of tracks" (click)="playTrack(track)" class="track-item">
+          <mat-icon matListItemIcon>headphones</mat-icon>
+          <div matListItemTitle>{{ track.title }}</div>
+          <div matListItemLine>{{ track.description }}</div>
+          <button mat-icon-button matListItemMeta (click)="playTrack(track); $event.stopPropagation()">
+            <mat-icon>play_arrow</mat-icon>
+          </button>
+        </mat-list-item>
+      </mat-list>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Room Selection (for testing when GPS is not available) -->
+  <mat-card class="rooms-card">
+    <mat-card-header>
+      <mat-card-title>Museum Rooms</mat-card-title>
+      <mat-card-subtitle>Select a room to simulate location</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-list>
+        <mat-list-item *ngFor="let room of rooms" (click)="selectRoom(room)" class="room-item">
+          <mat-icon matListItemIcon>room</mat-icon>
+          <div matListItemTitle>{{ room.name }}</div>
+          <div matListItemLine>{{ room.description }}</div>
+        </mat-list-item>
+      </mat-list>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<router-outlet></router-outlet>
