@@ -1,15 +1,36 @@
 /* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
 
-// Import Material Design prebuilt theme
-@import '@angular/material/prebuilt-themes/indigo-pink.css';
+// Include the Material Design core styles
+@include mat.core();
+
+// Define Material Design 3 theme using the new color system
+$museum-theme: mat.define-theme((
+  color: (
+    theme-type: light,
+    primary: mat.$azure-palette,
+    tertiary: mat.$violet-palette,
+  ),
+  typography: (
+    brand-family: 'Roboto',
+    plain-family: 'Roboto',
+  ),
+  density: (
+    scale: 0,
+  )
+));
+
+// Apply the Material Design 3 theme to all components
+@include mat.all-component-themes($museum-theme);
 
 html, body { 
-  height: 100%; 
+  height: 100%;
+  margin: 0;
 }
 
 body { 
-  margin: 0; 
-  font-family: Roboto, "Helvetica Neue", sans-serif; 
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: mat.get-theme-color($museum-theme, surface);
 }
 
 // Custom styles for PWA
@@ -19,10 +40,4 @@ body {
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
-}
-
-// Custom Material Design 3 adjustments
-:root {
-  --mdc-theme-primary: #1976d2;
-  --mdc-theme-secondary: #ff4081;
 }
