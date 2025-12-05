@@ -1,0 +1,43 @@
+/* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+
+// Include the Material Design core styles
+@include mat.core();
+
+// Define Material Design 3 theme using the new color system
+$museum-theme: mat.define-theme((
+  color: (
+    theme-type: light,
+    primary: mat.$azure-palette,
+    tertiary: mat.$violet-palette,
+  ),
+  typography: (
+    brand-family: 'Roboto',
+    plain-family: 'Roboto',
+  ),
+  density: (
+    scale: 0,
+  )
+));
+
+// Apply the Material Design 3 theme to all components
+@include mat.all-component-themes($museum-theme);
+
+html, body { 
+  height: 100%;
+  margin: 0;
+}
+
+body { 
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: mat.get-theme-color($museum-theme, surface);
+}
+
+// Custom styles for PWA
+.pwa-install-prompt {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+}
