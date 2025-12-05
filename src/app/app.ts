@@ -74,7 +74,9 @@ export class App implements OnInit, OnDestroy {
             horizontalPosition: 'center',
             verticalPosition: 'bottom'
           }).onAction().subscribe(() => {
-            this.audioService.playTrackById(room.audioTrackId);
+            this.audioService.playTrackById(room.audioTrackId).catch(error => {
+              this.snackBar.open(error.message || 'Failed to play audio', 'OK', { duration: 5000 });
+            });
           });
         }
       })
@@ -101,11 +103,19 @@ export class App implements OnInit, OnDestroy {
 
   playTrack(track: AudioTrack): void {
     this.audioService.loadTrack(track);
-    this.audioService.play();
+    this.audioService.play().catch(error => {
+      this.snackBar.open(error.message || 'Failed to play audio', 'OK', { duration: 5000 });
+    });
   }
 
   togglePlayPause(): void {
-    this.audioService.togglePlay();
+    if (this.audioState.isPlaying) {
+      this.audioService.pause();
+    } else {
+      this.audioService.play().catch(error => {
+        this.snackBar.open(error.message || 'Failed to play audio', 'OK', { duration: 5000 });
+      });
+    }
   }
 
   stopAudio(): void {

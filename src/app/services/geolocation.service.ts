@@ -186,10 +186,14 @@ export class GeolocationService {
   }
 
   // Simulate room detection for testing purposes (when GPS is not available)
-  simulateRoomEntry(roomId: string): void {
+  simulateRoomEntry(roomId: string): boolean {
     const room = this.rooms.find(r => r.id === roomId);
     if (room) {
       this.currentRoomSubject.next(room);
+      return true;
+    } else {
+      console.warn(`Room with id '${roomId}' not found`);
+      return false;
     }
   }
 }

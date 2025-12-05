@@ -116,12 +116,14 @@ export class AudioService {
     }
   }
 
-  play(): void {
+  play(): Promise<void> {
     if (this.audio.src) {
-      this.audio.play().catch(error => {
+      return this.audio.play().catch(error => {
         console.error('Error playing audio:', error);
+        throw new Error('Failed to play audio. The audio file may not be available.');
       });
     }
+    return Promise.reject(new Error('No audio source loaded'));
   }
 
   pause(): void {
@@ -142,19 +144,21 @@ export class AudioService {
     this.audio.volume = Math.max(0, Math.min(1, volume));
   }
 
-  togglePlay(): void {
+  togglePlay(): Promise<void> {
     if (this.audioStateSubject.value.isPlaying) {
       this.pause();
+      return Promise.resolve();
     } else {
-      this.play();
+      return this.play();
     }
   }
 
-  playTrackById(id: string): void {
+  playTrackById(id: string): Promise<void> {
     const track = this.getTrackById(id);
     if (track) {
       this.loadTrack(track);
-      this.play();
+      return this.play();
     }
+    return Promise.reject(new Error('Track not found'));
   }
 }
